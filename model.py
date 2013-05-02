@@ -3,6 +3,12 @@
 
 from datetime import datetime
 
+with open('all.rdns.tsv') as f:
+    rdns = {
+        token[0]:token[1][:-1] for token in \
+            (line.split('\t') for line in f.readlines())
+        }
+
 class refefeComment(object):
     def __init__(self, ts, fefets, nick, text, ip, censored):
         self.ts = datetime.strptime(ts, '%Y-%m-%d %H:%M:%S')
@@ -10,6 +16,10 @@ class refefeComment(object):
         self.nick = nick.decode('utf-8')
         self.text = text.decode('utf-8')
         self.ip = ip
+        try:
+            self.hostname = rdns[ip]
+        except KeyError:
+            self.hostname = None
         self.censored = bool(int(censored))
 
 class refefeModel(object):
