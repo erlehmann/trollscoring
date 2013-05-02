@@ -3,23 +3,25 @@
 
 import chardet
 import codecs
-import csv
-
-import socket
-socket.setdefaulttimeout(5)
 
 from sys import stdout
 
-with open('refefe.csv') as f:
-    content = f.read()
+with open('all.rdns.tsv') as f:
+    rdns = {
+        token[0]:token[1][:-1] for token in \
+            (line.split('\t') for line in f.readlines())
+        }
 
-rows = [' '.join(r.split()) for r in content.split('NULL')]
-reader = csv.reader(rows, delimiter=';')
-for row in reader:
-    ip_address = row[5].decode('utf-8').encode('latin-1', 'replace')
+from model import refefeModel
+m = refefeModel('comments.tsv')
+
+for comment in m.comments:
+    if comment.censored:
+        continue
+    ip_address = comment.ip
     try:
-        hostname = socket.gethostbyaddr(ip_address)[0]
-    except:
-        hostname = None
+        hostname = rdns[ip_address]
+    except KeyError:
+        hostname = 'domain.invalid'
     stdout.write('%s\t%s\n' % (ip_address, hostname))
     stdout.flush()
