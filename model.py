@@ -10,7 +10,7 @@ class refefeComment(object):
         self.nick = nick.decode('utf-8')
         self.text = text.decode('utf-8')
         self.ip = ip
-        self.censored = bool(censored)
+        self.censored = bool(int(censored))
 
 class refefeModel(object):
     def __init__(self, filename):
