@@ -1,6 +1,8 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
+from html5lib import parse
+from os import path, walk
 from datetime import datetime
 
 with open('all.rdns.tsv') as f:
@@ -24,10 +26,26 @@ class refefeComment(object):
 
 class refefeModel(object):
     def __init__(self, filename):
-
         with open(filename) as f:
             content = f.read()
             rows = [r.split('\t') for r in content.split('NULL\n')[1:]]
             self.comments = [refefeComment(
                     row[1], row[2], row[3], row[4], row[5], row[6],
                     ) for row in rows]
+
+class fefePost(object):
+    def __init__(self, directory, ts):
+        self.ts = ts
+        with open(path.join(directory, ts)) as f:
+            self.html = f.read().strip()
+
+    @property
+    def text(self):
+        tree = parse(self.html, 'lxml')
+        return tree.xpath('string()')
+
+class fefeModel(object):
+    def __init__(self, directory):
+        self.posts = [fefePost(directory, timestamp) for timestamp in \
+                          (filename for filename in \
+                               list(walk(directory))[0][2])]
