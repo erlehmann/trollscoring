@@ -41,8 +41,11 @@ class refefeModel(object):
 class fefePost(object):
     def __init__(self, directory, ts):
         self.ts = ts
-        with open(path.join(directory, ts)) as f:
-            self.html = f.read().strip().decode('utf-8')
+        try:
+            with open(path.join(directory, ts)) as f:
+                self.html = f.read().strip().decode('utf-8')
+        except IOError:
+            self.html = ''
 
     @property
     def text(self):
