@@ -37,7 +37,7 @@ class fefePost(object):
     def __init__(self, directory, ts):
         self.ts = ts
         with open(path.join(directory, ts)) as f:
-            self.html = f.read().strip()
+            self.html = f.read().strip().decode('utf-8')
 
     @property
     def text(self):
