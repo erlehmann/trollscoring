@@ -12,17 +12,22 @@ with open('all.rdns.tsv') as f:
         }
 
 class refefeComment(object):
-    def __init__(self, ts, fefets, nick, text, ip, censored):
+    def __init__(self, ts, fefets, nick, html, ip, censored):
         self.ts = datetime.strptime(ts, '%Y-%m-%d %H:%M:%S')
         self.fefets = fefets
         self.nick = nick.decode('utf-8')
-        self.text = text.decode('utf-8')
+        self.html = html.decode('utf-8')
         self.ip = ip
         try:
             self.hostname = rdns[ip]
         except KeyError:
             self.hostname = None
         self.censored = bool(int(censored))
+
+    @property
+    def text(self):
+        tree = parse(self.html, 'lxml')
+        return tree.xpath('string()')
 
 class refefeModel(object):
     def __init__(self, filename):
