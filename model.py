@@ -39,10 +39,10 @@ class refefeModel(object):
                     ) for row in rows]
 
 class fefePost(object):
-    def __init__(self, directory, ts):
-        self.ts = ts
+    def __init__(self, directory, fefets):
+        self.fefets = fefets
         try:
-            with open(path.join(directory, ts)) as f:
+            with open(path.join(directory, fefets)) as f:
                 self.html = f.read().strip().decode('utf-8')
         except IOError:
             self.html = ''
@@ -51,6 +51,10 @@ class fefePost(object):
     def text(self):
         tree = parse(self.html, 'lxml')
         return tree.xpath('string()')
+
+    @property
+    def ts(self):
+        return datetime.fromtimestamp(int(self.fefets, base=16) ^ 0xFEFEC0DE)
 
 class fefeModel(object):
     def __init__(self, directory):
