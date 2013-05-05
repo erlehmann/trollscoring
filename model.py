@@ -64,3 +64,6 @@ class fefeModel(object):
         self.posts = [fefePost(directory, timestamp) for timestamp in \
                           (filename for filename in \
                                list(walk(directory))[0][2])]
+
+    def __getitem__(self, fefets):
+        return [p for p in self.posts if p.fefets == fefets][0]
