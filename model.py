@@ -11,6 +11,14 @@ with open('all.rdns.tsv') as f:
             (line.split('\t') for line in f.readlines())
         }
 
+# see <http://stackoverflow.com/questions/8733233/filtering-out-certain-bytes-in-python#answer-8735509>
+def valid_XML_char_ordinal(i):
+    return 0x20 <= i <= 0xD7FF or i in (0x9, 0xA, 0xD) or \
+        0xE000 <= i <= 0xFFFD or 0x10000 <= i <= 0x10FFFF
+
+def sanitize(string):
+    return ''.join(c for c in string if valid_XML_char_ordinal(ord(c)))
+
 class refefeComment(object):
     def __init__(self, ts, fefets, nick, html, ip, censored):
         self.ts = datetime.strptime(ts, '%Y-%m-%d %H:%M:%S')
@@ -26,7 +34,7 @@ class refefeComment(object):
 
     @property
     def text(self):
-        tree = parse(self.html, 'lxml')
+        tree = parse(sanitize(self.html), 'lxml')
         return tree.xpath('string()')
 
 class refefeModel(object):
@@ -52,7 +60,7 @@ class fefePost(object):
 
     @property
     def text(self):
-        tree = parse(self.html, 'lxml')
+        tree = parse(sanitize(self.html), 'lxml')
         return tree.xpath('string()')
 
     @property
