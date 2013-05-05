@@ -38,6 +38,9 @@ class refefeModel(object):
                     row[1], row[2], row[3], row[4], row[5], row[6],
                     ) for row in rows]
 
+    def __getitem__(self, fefets):
+        return [c for c in self.comments if c.fefets == fefets]
+
 class fefePost(object):
     def __init__(self, directory, fefets):
         self.fefets = fefets
