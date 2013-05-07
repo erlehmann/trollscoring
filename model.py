@@ -4,6 +4,12 @@
 from html5lib import parse
 from os import path, walk
 from datetime import datetime
+from werkzeug.contrib.cache import FileSystemCache
+
+ts_cache = FileSystemCache('.ts_cache', threshold=99999999, \
+                               default_timeout=99999999)
+text_cache = FileSystemCache('.text_cache', threshold=99999999, \
+                                 default_timeout=99999999)
 
 with open('all.rdns.tsv') as f:
     rdns = {
@@ -60,12 +66,21 @@ class fefePost(object):
 
     @property
     def text(self):
-        tree = parse(sanitize(self.html), 'lxml')
-        return tree.xpath('string()')
+        text = text_cache.get(self.html)
+        if text == None:
+            tree = parse(sanitize(self.html), 'lxml')
+            text = tree.xpath('string()')
+            text_cache.set(self.html, text)
+        return text
 
     @property
     def ts(self):
-        return datetime.fromtimestamp(int(self.fefets, base=16) ^ 0xFEFEC0DE)
+        ts = ts_cache.get(self.fefets)
+        if ts == None:
+            ts =  datetime.fromtimestamp(int(self.fefets, base=16) \
+                                             ^ 0xFEFEC0DE)
+            ts_cache.set(self.fefets, ts)
+        return ts
 
 class fefeModel(object):
     def __init__(self, directory):
