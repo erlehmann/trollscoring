@@ -20,4 +20,4 @@ for sentence in (comment.text for comment in m.comments):
         c[word] += 1
 
 for word, count in c.most_common(100):
-    stdout.write('%s\t%s\n' % (count, word))
+    stdout.write('%s\t%s\n' % (count, word.encode('utf-8')))
