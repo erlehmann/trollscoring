@@ -66,11 +66,11 @@ class fefePost(object):
 
     @property
     def text(self):
-        text = text_cache.get(self.html)
+        text = text_cache.get(self.fefets)
         if text == None:
             tree = parse(sanitize(self.html), 'lxml')
             text = tree.xpath('string()')
-            text_cache.set(self.html, text)
+            text_cache.set(self.fefets, text)
         return text
 
     @property
