@@ -52,17 +52,18 @@ hist_save([t.hour for t in blog_times], u'Blogzeiten', 'fefe-blog-times-hist.png
 from itertools import chain
 
 print 'Calculating comment times …'
-comment_times = [[c.ts for c in refefe[fefets]] \
+comment_times = [[c.ts for c in refefe[fefets] if not c.censored] \
     for fefets in [p.fefets for p in posts]]
 comment_times = list(chain(*comment_times))
-comment_times_of_day = [[time_of_day(c.ts) for c in refefe[fefets]] \
+comment_times_of_day = [[time_of_day(c.ts) for c in refefe[fefets] if not c.censored] \
     for fefets in [p.fefets for p in posts]]
 comment_times_of_day = list(chain(*comment_times_of_day))
 
 plot_save(comment_times, comment_times_of_day, u'Kommentarzeiten', 'refefe-comment-times.png')
+hist_save([t.hour for t in comment_times], u'Kommentarzeiten', 'refefe-comment-times-hist.png', bins=24)
 
 print 'Calculating comment count …'
-comment_count = [len(refefe[fefets]) \
+comment_count = [len([c for c in refefe[fefets] if not c.censored]) \
          for fefets in [p.fefets for p in posts]]
 plot_save(X, comment_count, u'Anzahl Kommentare', 'refefe-comment-count.png')
 hist_save(comment_count, u'Anzahl Kommentare', 'refefe-comment-count-hist.png')
@@ -74,7 +75,7 @@ def average(values):
         return 0
 
 print 'Calculating average comment lengths …'
-average_comment_length = [average([len(c.text) for c in refefe[fefets]]) \
+average_comment_length = [average([len(c.text) for c in refefe[fefets] if not c.censored]) \
          for fefets in [p.fefets for p in posts]]
 
 plot_save(X, average_comment_length, u'Durchschnittliche Kommentarlänge', 'refefe-average-comment-length.png')
