@@ -4,6 +4,7 @@
 from html5lib import parse
 from os import path, walk
 from datetime import datetime
+from re import sub
 from werkzeug.contrib.cache import FileSystemCache
 
 ts_cache = FileSystemCache('.ts_cache', threshold=99999999, \
@@ -40,8 +41,7 @@ class refefeComment(object):
 
     @property
     def text(self):
-        tree = parse(sanitize(self.html), 'lxml')
-        return tree.xpath('string()')
+        return sub('<[^>]*>','', self.html)
 
 class refefeModel(object):
     def __init__(self, filename):
