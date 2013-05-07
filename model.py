@@ -9,8 +9,6 @@ from werkzeug.contrib.cache import FileSystemCache
 
 ts_cache = FileSystemCache('.ts_cache', threshold=99999999, \
                                default_timeout=99999999)
-text_cache = FileSystemCache('.text_cache', threshold=99999999, \
-                                 default_timeout=99999999)
 
 with open('all.rdns.tsv') as f:
     rdns = {
@@ -66,12 +64,7 @@ class fefePost(object):
 
     @property
     def text(self):
-        text = text_cache.get(self.fefets)
-        if text == None:
-            tree = parse(sanitize(self.html), 'lxml')
-            text = tree.xpath('string()')
-            text_cache.set(self.fefets, text)
-        return text
+        return sub('<[^>]*>','', self.html)
 
     @property
     def ts(self):
