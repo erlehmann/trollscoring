@@ -8,7 +8,8 @@ from matplotlib import ticker
 
 from model import refefeModel
 refefe = refefeModel('comments.tsv')
-comments = [c for c in refefe.comments if str(c.hostname) != 'None']
+comments = [c for c in refefe.comments if str(c.hostname) != 'None' and \
+                not c.censored]
 
 hostnames = Counter(['.'.join(str(c.hostname).split('.')[-2:]) \
                          for c in comments])
